@@ -1,66 +1,66 @@
-# Temporal Fusion Transformers for Interpretable Multi-horizon Time Series Forecasting
+# Преобразователи временного синтеза для интерпретируемого многогоризонтного прогнозирования временных рядов
 
-Authors: Bryan Lim, Sercan Arik, Nicolas Loeff and Tomas Pfister
+Авторы: Брайан Лим, Серкан Арик, Николас Лоефф и Томас Пфистер
 
-Paper link: https://arxiv.org/pdf/1912.09363.pdf
+Ссылка на документ: https://arxiv.org/pdf/1912.09363.pdf.
 
-### Abstract
-> Multi-horizon forecasting problems often contain a complex mix of inputs -- including static (i.e. time-invariant) covariates, known future inputs, and other exogenous time series that are only observed historically -- without any prior information on how they interact with the target. While several deep learning models have been proposed for multi-step prediction, they typically comprise black-box models which do not account for the full range of inputs present in common scenarios. In this paper, we introduce the Temporal Fusion Transformer (TFT) -- a novel attention-based architecture which combines high-performance multi-horizon forecasting with interpretable insights into temporal dynamics. To learn temporal relationships at different scales, the TFT utilizes recurrent layers for local processing and interpretable self-attention layers for learning long-term dependencies. The TFT also uses specialized components for the judicious selection of relevant features and a series of gating layers to suppress unnecessary components, enabling high performance in a wide range of regimes. On a variety of real-world datasets, we demonstrate significant performance improvements over existing benchmarks, and showcase three practical interpretability use-cases of TFT.
+### Аннотация
+> Проблемы многогоризонтного прогнозирования часто содержат сложную смесь входных данных, включая статические (т. е. неизменные во времени) ковариаты, известные будущие входные данные и другие экзогенные временные ряды, которые наблюдаются только исторически, без какой-либо предварительной информации о том, как они взаимодействуют с целью. Хотя для многоэтапного прогнозирования было предложено несколько моделей глубокого обучения, они обычно представляют собой модели «черного ящика», которые не учитывают весь спектр входных данных, присутствующих в распространенных сценариях. В этой статье мы представляем Temporal Fusion Transformer (TFT) — новую архитектуру, основанную на внимании, которая сочетает в себе высокопроизводительное многогоризонтное прогнозирование с интерпретируемой информацией о временной динамике. Чтобы изучить временные отношения в разных масштабах, TFT использует повторяющиеся уровни для локальной обработки и интерпретируемые уровни самообслуживания для изучения долгосрочных зависимостей. TFT также использует специализированные компоненты для разумного выбора соответствующих функций и ряд стробирующих слоев для подавления ненужных компонентов, обеспечивая высокую производительность в широком диапазоне режимов. На различных наборах реальных данных мы демонстрируем значительное улучшение производительности по сравнению с существующими тестами и демонстрируем три практических варианта использования TFT для интерпретации.
 
 
-## Code Organisation
-This repository contains the source code for the Temporal Fusion Transformer, along with the training and evaluation routines for the experiments described in the paper.
+## Организация кода
+Этот репозиторий содержит исходный код Temporal Fusion Transformer, а также процедуры обучения и оценки для экспериментов, описанных в статье.
 
-The key modules for experiments are organised as:
+Ключевые модули для экспериментов организованы следующим образом:
 
-* **data\_formatters**: Stores the main dataset-specific column definitions, along with functions for data transformation and normalization. For compatibility with the TFT, new experiments should implement a unique ``GenericDataFormatter`` (see **base.py**), with examples for the default experiments shown in the other python files.
-* **expt\_settings**: Holds the folder paths and configurations for the default experiments,
-* **libs**: Contains the main libraries, including classes to manage hyperparameter optimisation (**hyperparam\_opt.py**), the main TFT network class (**tft\_model.py**), and general helper functions (**utils.py**)
+* **data\_formatters**: хранит основные определения столбцов, специфичные для набора данных, а также функции для преобразования и нормализации данных. Для совместимости с TFT новые эксперименты должны реализовывать уникальный GenericDataFormatter (см. **base.py**), а примеры экспериментов по умолчанию показаны в других файлах Python.
+* **expt\_settings**: содержит пути к папкам и конфигурации для экспериментов по умолчанию.
+* **libs**: содержит основные библиотеки, включая классы для управления оптимизацией гиперпараметров (**hyperparam\_opt.py**), основной сетевой класс TFT (**tft\_model.py**) и общие вспомогательные функции (**utils.py**).
 
-Scripts are all saved in the main folder, with descriptions below:
+Все скрипты сохраняются в основной папке с описаниями ниже:
 
-* **run.sh**: Simple shell script to ensure correct environmental setup.
-* **script\_download\_data.py**: Downloads data for the main experiment and processes them into csv files ready for training/evaluation.
-* **script\_train\_fixed\_params.py**: Calibrates the TFT using a predefined set of hyperparameters, and evaluates for a given experiment.
-* **script\_hyperparameter\_optimisation.py**: Runs full hyperparameter optimization using the default random search ranges defined for the TFT.
+* **run.sh**: простой сценарий оболочки, обеспечивающий правильную настройку среды.
+* **script\_download\_data.py**: загружает данные для основного эксперимента и обрабатывает их в файлы CSV, готовые для обучения/оценки.
+* **script\_train\_fixed\_params.py**: калибрует TFT с использованием предопределенного набора гиперпараметров и оценивает данный эксперимент.
+* **script\_hyperparameter\_optimisation.py**: выполняет полную оптимизацию гиперпараметров, используя диапазоны случайного поиска по умолчанию, определенные для TFT.
 
-## Running Default Experiements
-Our four default experiments are divided into ``volatility``, ``electricity``, ``traffic``, and``favorita``. To run these experiments, first download the data, and then run the relevant training routine.
+## Запуск экспериментов по умолчанию
+Наши четыре эксперимента по умолчанию разделены на «волатильность», «электричество», «трафик» и «фаворита». Чтобы провести эти эксперименты, сначала загрузите данные, а затем запустите соответствующую программу обучения.
 
-### Step 1: Download data for default experiments
-To download the experiment data, run the following script:
+### Шаг 1. Загрузите данные для экспериментов по умолчанию
+Чтобы скачать данные эксперимента, запустите следующий скрипт:
 ```bash
 python3 -m script_download_data $EXPT $OUTPUT_FOLDER
 ```
-where ``$EXPT`` can be any of {``volatility``, ``electricity``, ``traffic``, ``favorita``}, and ``$OUTPUT_FOLDER`` denotes the root folder in which experiment outputs are saved.
+где ``$EXPT`` может быть любым из {``volatility``, ``electricity``, ``traffic``, ``favorita``}, а ``$OUTPUT_FOLDER`` обозначает корневую папку, в которой сохраняются результаты эксперимента.
 
-### Step 2: Train and evaluate network
-To train the network with the optimal default parameters, run:
+### Шаг 2: Обучение и оценка сети
+Чтобы обучить сеть с оптимальными параметрами по умолчанию, запустите:
+``` баш
+python3 -m script_train_fixed_params $EXPT $OUTPUT_FOLDER $USE_GPU 
+```
+где ``$EXPT`` и ``$OUTPUT_FOLDER`` такие же, как указано выше, ``$GPU`` обозначает, следует ли запускать с поддержкой графического процессора (варианты: {``'да'`` или ``'нет'``}).
+
+Для полной оптимизации гиперпараметров выполните:
 ```bash
 python3 -m script_train_fixed_params $EXPT $OUTPUT_FOLDER $USE_GPU 
 ```
-where ``$EXPT`` and ``$OUTPUT_FOLDER`` are as above, ``$GPU`` denotes whether to run with GPU support (options are {``'yes'`` or``'no'``}).
+где варианты такие же, как указано выше.
 
-For full hyperparameter optimization, run:
-```bash
-python3 -m script_hyperparam_opt $EXPT $OUTPUT_FOLDER $USE_GPU yes
-```
-where options are as above.
+## Настройка сценариев для новых наборов данных
+Чтобы повторно использовать сценарии оптимизации гиперпараметров для новых наборов данных, нам нужно добавить новый эксперимент, который включает в себя создание нового средства форматирования данных и обновление конфигурации.
 
-## Customising Scripts for New Datasets
-To re-use the hyperparameter optimization scripts for new datasets, we need to add a new experiment -- which involves the creation of a new data formatter and config updates.
+### Шаг 1. Реализация специального средства форматирования данных
+Сначала создайте новый файл Python в ``data_formatters`` (например, example.py), который содержит класс форматирования данных (например, ``ExampleFormatter``). Он должен наследовать base.GenericDataFormatter и предоставлять реализации всех абстрактных функций. Пример реализации можно найти в volatility.py.
 
-### Step 1: Implement custom data formatter
-First, create a new python file in ``data_formatters`` (e.g. example.py) which contains a data formatter class (e.g. ``ExampleFormatter``). This should inherit ``base.GenericDataFormatter`` and provide implementations of all abstract functions. An implementation example can be found in volatility.py.
-
-### Step 2: Update configs.py
-Add a name for your new experiement to the ``default_experiments`` attribute in ``expt_settings.configs.ExperimentConfig`` (e.g. ``example``).
+### Шаг 2. Обновите configs.py
+Добавьте имя для вашего нового эксперимента в атрибут ``default_experiments`` в ``expt_settings.configs.ExperimentConfig`` (например, ``example``).
 ```python
 default_experiments = ['volatility', 'electricity', 'traffic', 'favorita', 'example']
 ```
 
 
-Next, add an entry in ``data_csv_path`` mapping the experiment name to name of the csv file containing the data:
+Затем добавьте запись в data_csv_path, сопоставляя имя эксперимента с именем CSV-файла, содержащего данные:
 
 ```python
 @property
@@ -76,7 +76,7 @@ Next, add an entry in ``data_csv_path`` mapping the experiment name to name of t
     return os.path.join(self.data_folder, csv_map[self.experiment])
 ```
 
-Lastly, add your custom data formatter to the factory function:
+Наконец, добавьте свой собственный форматировщик данных в фабричную функцию:
 
 ```python
 def make_data_formatter(self):
@@ -94,7 +94,7 @@ def make_data_formatter(self):
     }
 ```
 
-As an optional step, change the number of random search iterations if required:
+В качестве необязательного шага измените количество итераций случайного поиска, если необходимо:
 ```python
 @property
   def hyperparam_iterations(self):
@@ -108,9 +108,8 @@ As an optional step, change the number of random search iterations if required:
 ```
 
 
-### Step 3: Run training script
-Full hyperparameter optimization can then be run as per the previous section, e.g.:
+### Шаг 3. Запустите сценарий обучения
+Затем можно запустить полную оптимизацию гиперпараметров, как описано в предыдущем разделе, например:
 ```bash
 python3 -m script_hyperparam_opt example . yes yes
-
 ```
